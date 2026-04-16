@@ -160,16 +160,18 @@ export default function DownloadHistory() {
 
   const handleRedownload = async (animation: any) => {
     try {
-      // Track download in database
-      await supabase.from('user_downloads').insert({
-        user_id: user?.id,
-        animation_id: animation.id,
-      });
+      // Record download via server-side RPC (enforces quota)
+      const { error: rpcError } = await supabase.rpc('record_download', { _animation_id: animation.id });
+      if (rpcError) throw rpcError;
+
+      // Get secure file URL via RPC
+      const { data: fileUrl, error: urlError } = await supabase.rpc('get_animation_file_url', { _animation_id: animation.id });
+      if (urlError || !fileUrl) throw urlError || new Error('Could not retrieve file URL');
 
       // Trigger file download
       const link = document.createElement('a');
-      link.href = animation.file_url;
-      link.download = `${animation.title.replace(/\s+/g, '-').toLowerCase()}.jpg`;
+      link.href = fileUrl;
+      link.download = `${animation.title.replace(/\s+/g, '-').toLowerCase()}.mp4`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
