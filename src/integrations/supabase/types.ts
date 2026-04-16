@@ -367,6 +367,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_animation_file_url: {
+        Args: { _animation_id: string }
+        Returns: string
+      }
       get_canonical_category: {
         Args: { old_category: string }
         Returns: string

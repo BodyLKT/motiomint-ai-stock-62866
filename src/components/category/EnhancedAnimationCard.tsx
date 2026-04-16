@@ -73,11 +73,10 @@ export default function EnhancedAnimationCard({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const { data: animation, error: fetchError } = await supabase
-        .from('animations')
-        .select('file_url')
-        .eq('id', id)
-        .single();
+      // Use secure RPC to get file URL (auth-only)
+      const { data: fileUrl, error: fetchError } = await supabase.rpc('get_animation_file_url', {
+        _animation_id: id,
+      });
 
       if (fetchError) throw fetchError;
 
@@ -88,7 +87,7 @@ export default function EnhancedAnimationCard({
       if (rpcError) throw rpcError;
 
       const link = document.createElement('a');
-      link.href = animation.file_url;
+      link.href = fileUrl;
       link.download = `${title.replace(/\s+/g, '-').toLowerCase()}.jpg`;
       document.body.appendChild(link);
       link.click();
