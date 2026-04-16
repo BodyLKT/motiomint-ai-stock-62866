@@ -68,11 +68,10 @@ export default function AnimationCard({
       if (!user) throw new Error('Not authenticated');
 
       // Get animation file URL
-      const { data: animation, error: fetchError } = await supabase
-        .from('animations')
-        .select('file_url')
-        .eq('id', id)
-        .single();
+      // Use secure RPC to get file URL (auth-only)
+      const { data: fileUrl, error: fetchError } = await supabase.rpc('get_animation_file_url', {
+        _animation_id: id,
+      });
 
       if (fetchError) throw fetchError;
 
