@@ -87,7 +87,7 @@ export default function EnhancedAnimationCard({
       if (rpcError) throw rpcError;
 
       const link = document.createElement('a');
-      link.href = animation.file_url;
+      link.href = fileUrl;
       link.download = `${title.replace(/\s+/g, '-').toLowerCase()}.jpg`;
       document.body.appendChild(link);
       link.click();
