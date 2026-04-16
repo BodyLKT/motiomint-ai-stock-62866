@@ -163,9 +163,15 @@ export default function CartPage() {
       });
       if (rpcError) throw rpcError;
 
+      // Get secure file URL via RPC
+      const { data: fileUrl, error: urlError } = await supabase.rpc('get_animation_file_url', {
+        _animation_id: animation.id,
+      });
+      if (urlError) throw urlError;
+
       // Trigger download
       const link = document.createElement('a');
-      link.href = animation.file_url;
+      link.href = fileUrl;
       link.download = `${animation.title}.mp4`;
       document.body.appendChild(link);
       link.click();
@@ -316,9 +322,15 @@ export default function CartPage() {
           animation_id: item.animation.id,
         });
 
+        // Get secure file URL via RPC
+        const { data: fileUrl, error: urlError } = await supabase.rpc('get_animation_file_url', {
+          _animation_id: item.animation.id,
+        });
+        if (urlError) throw urlError;
+
         // Trigger download
         const link = document.createElement('a');
-        link.href = item.animation.file_url;
+        link.href = fileUrl;
         link.download = `${item.animation.title}.mp4`;
         document.body.appendChild(link);
         link.click();

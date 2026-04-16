@@ -354,9 +354,15 @@ export default function VideoDetailsPage() {
       });
       if (rpcError) throw rpcError;
 
+      // Get secure file URL via RPC
+      const { data: fileUrl, error: urlError } = await supabase.rpc('get_animation_file_url', {
+        _animation_id: animation.id,
+      });
+      if (urlError) throw urlError;
+
       // Trigger file download
       const link = document.createElement('a');
-      link.href = animation.file_url;
+      link.href = fileUrl;
       link.download = `${animation.title.replace(/\s+/g, '-').toLowerCase()}-${config.resolution}.${config.format}`;
       document.body.appendChild(link);
       link.click();
