@@ -34,6 +34,18 @@ function isPlaceholderUrl(url?: string | null): boolean {
   return url.includes('placehold.co') || url.includes('placeholder');
 }
 
+function isUsableImageUrl(url?: string | null): boolean {
+  if (!url || isPlaceholderUrl(url)) return false;
+
+  return (
+    url.startsWith('/thumbnails/') ||
+    url.startsWith('/videos/') ||
+    url.startsWith('/images/') ||
+    url.includes('supabase') ||
+    /\.(png|jpe?g|webp|avif|gif|svg)(\?.*)?$/i.test(url)
+  );
+}
+
 export default function RealThumbnail({
   thumbnailUrl,
   legacyThumbnailUrl,
@@ -50,14 +62,10 @@ export default function RealThumbnail({
   const isRealThumbnail = 
     thumbSource === 'extracted_frame' && 
     thumbStatus === 'ready' && 
-    thumbnailUrl && 
-    !isPlaceholderUrl(thumbnailUrl);
+    isUsableImageUrl(thumbnailUrl);
 
   // Check if legacy thumbnail is usable (real file, not placeholder)
-  const hasUsableLegacy = 
-    legacyThumbnailUrl && 
-    !isPlaceholderUrl(legacyThumbnailUrl) &&
-    (legacyThumbnailUrl.startsWith('/thumbnails/') || legacyThumbnailUrl.includes('supabase'));
+  const hasUsableLegacy = isUsableImageUrl(legacyThumbnailUrl);
 
   // Decide what to show
   const showRealThumbnail = isRealThumbnail && !hasError;
