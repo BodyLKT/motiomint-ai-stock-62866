@@ -57,6 +57,18 @@ function isPlaceholderUrl(url?: string | null): boolean {
   return url.includes('placehold.co') || url.includes('placeholder');
 }
 
+function isUsableImageUrl(url?: string | null): boolean {
+  if (!url || isPlaceholderUrl(url)) return false;
+
+  return (
+    url.startsWith('/thumbnails/') ||
+    url.startsWith('/videos/') ||
+    url.startsWith('/images/') ||
+    url.includes('supabase') ||
+    /\.(png|jpe?g|webp|avif|gif|svg)(\?.*)?$/i.test(url)
+  );
+}
+
 export default function DetailMediaPreview({
   thumbnailUrl,
   videoUrl,
@@ -83,14 +95,10 @@ export default function DetailMediaPreview({
   const hasRealThumbnail = 
     thumbSource === 'extracted_frame' && 
     thumbStatus === 'ready' && 
-    thumbPosterUrl && 
-    !isPlaceholderUrl(thumbPosterUrl);
+    isUsableImageUrl(thumbPosterUrl);
   
   // Check if legacy thumbnail is usable
-  const hasUsableLegacy = 
-    thumbnailUrl && 
-    !isPlaceholderUrl(thumbnailUrl) &&
-    (thumbnailUrl.startsWith('/thumbnails/') || thumbnailUrl.includes('supabase'));
+  const hasUsableLegacy = isUsableImageUrl(thumbnailUrl);
 
   const effectiveThumbnailUrl = hasRealThumbnail 
     ? thumbPosterUrl 
