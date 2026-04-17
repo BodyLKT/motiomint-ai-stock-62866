@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import MainNavigation from '@/components/navigation/MainNavigation';
 import ThumbnailAdminPanel from '@/components/admin/ThumbnailAdminPanel';
+import MediaIntegrityChecker from '@/components/admin/MediaIntegrityChecker';
 import { Loader2, ShieldAlert } from 'lucide-react';
 
 export default function AdminThumbnails() {
@@ -70,7 +71,11 @@ export default function AdminThumbnails() {
           </div>
           
           <ThumbnailAdminPanel />
-          
+
+          <div className="mt-8">
+            <MediaIntegrityChecker />
+          </div>
+
           <div className="mt-8 p-4 bg-muted/30 rounded-lg">
             <h3 className="font-medium mb-2">Technical Details</h3>
             <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
