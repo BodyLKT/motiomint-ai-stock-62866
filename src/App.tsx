@@ -32,6 +32,8 @@ import NotFound from "./pages/NotFound";
 import AdminThumbnails from "./pages/AdminThumbnails";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Library from "./pages/Library";
+import EditShare from "./pages/EditShare";
 
 const queryClient = new QueryClient();
 
