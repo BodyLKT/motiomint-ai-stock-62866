@@ -156,9 +156,8 @@ export default function MainNavigation({ onLoginClick, onSignUpClick }: MainNavi
   }));
 
   const toolsItems = [
-    { name: t('tools.library'), icon: Film, path: '/dashboard', description: 'Browse all animations' },
-    { name: t('tools.editShare'), icon: Wand2, path: '/dashboard', description: 'Customize animations' },
-    
+    { name: t('tools.library'), icon: Film, path: '/library', description: 'Browse all animations' },
+    { name: t('tools.editShare'), icon: Wand2, path: '/edit-share', description: 'Customize and share animations' },
   ];
 
   return (

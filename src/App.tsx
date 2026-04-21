@@ -32,6 +32,8 @@ import NotFound from "./pages/NotFound";
 import AdminThumbnails from "./pages/AdminThumbnails";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Library from "./pages/Library";
+import EditShare from "./pages/EditShare";
 
 const queryClient = new QueryClient();
 
@@ -83,6 +85,8 @@ const App = () => (
                 />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/library" element={<Library />} />
+                <Route path="/edit-share" element={<EditShare />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
