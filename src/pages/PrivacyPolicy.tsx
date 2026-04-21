@@ -54,7 +54,7 @@ const PrivacyPolicy = () => {
           <section>
             <h2 className="text-2xl font-bold mb-4 text-foreground">Third-Party Editors</h2>
             <p className="text-muted-foreground leading-relaxed">
-              When you choose to open an animation in a third-party editor (such as Canva, CapCut, or VEED), we may 
+              When you choose to open an animation in a third-party editor (such as Canva or CapCut), we may 
               provide that service with a file URL or media asset necessary to load your animation. We do not control 
               how these third parties collect, use, or store your information.
             </p>

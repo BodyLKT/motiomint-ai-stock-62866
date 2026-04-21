@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Edit3, Share2, Video, Smartphone, Facebook, Instagram, Linkedin, ExternalLink, CheckCircle2, Sparkles, X as XIcon } from 'lucide-react';
+import { Edit3, Share2, Smartphone, Facebook, Instagram, Linkedin, ExternalLink, CheckCircle2, Sparkles, X as XIcon } from 'lucide-react';
 import MainNavigation from '@/components/navigation/MainNavigation';
 import { Footer } from '@/components/Footer';
 import { BackToTop } from '@/components/ui/BackToTop';
@@ -13,7 +13,6 @@ import { toast } from '@/hooks/use-toast';
 
 const editors = [
   { name: 'Canva', url: 'https://www.canva.com/', desc: 'Drag-and-drop design editor with templates and brand kits.', icon: Edit3 },
-  { name: 'VEED', url: 'https://www.veed.io/', desc: 'Browser-based video editor with subtitles, effects, and trimming.', icon: Video },
   { name: 'CapCut', url: 'https://www.capcut.com/', desc: 'Mobile-first creative editor for short-form social video.', icon: Smartphone },
 ];
 
@@ -68,7 +67,7 @@ export default function EditShare() {
               Download an animation from your library, then open it in one of the supported editors below.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
               {editors.map((e) => (
                 <Card key={e.name} className="p-6 flex flex-col items-center text-center gap-3 hover:border-primary/40 hover:bg-primary/5 transition-all">
                   <div className="p-3 rounded-full bg-primary/10">
@@ -87,7 +86,7 @@ export default function EditShare() {
               <div className="flex items-start gap-2 text-sm">
                 <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                 <p className="text-muted-foreground">
-                  Canva, CapCut, and VEED are third-party tools. MotioMint is not affiliated with these services.
+                  Canva and CapCut are third-party tools. MotioMint is not affiliated with these services.
                   Editing your animation in these tools is subject to their own terms and privacy policies.
                 </p>
               </div>
