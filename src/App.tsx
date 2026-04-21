@@ -34,6 +34,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Library from "./pages/Library";
 import EditShare from "./pages/EditShare";
+import QaVeedAudit from "./pages/QaVeedAudit";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +88,7 @@ const App = () => (
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/library" element={<Library />} />
                 <Route path="/edit-share" element={<EditShare />} />
+                <Route path="/qa/veed-audit" element={<QaVeedAudit />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
