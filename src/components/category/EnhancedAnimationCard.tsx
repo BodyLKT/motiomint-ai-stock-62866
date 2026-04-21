@@ -173,22 +173,9 @@ export default function EnhancedAnimationCard({
           />
         </LiquidGlassIconButton>
 
-        {/* Title & Tags - Bottom Overlay - visible only on hover */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 space-y-2 translate-y-full group-hover:translate-y-0 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300">
-          <p className="text-white font-bold text-base line-clamp-1 drop-shadow-[0_3px_10px_rgba(0,0,0,0.9)]">
-            {title}
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {tags.slice(0, 3).map((tag) => (
-              <Badge key={tag} variant="outline" className="text-xs bg-black/90 text-white border-white/40 backdrop-blur-sm shadow-lg font-semibold px-2.5 py-0.5">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        </div>
-
-        {/* Action Buttons - Overlaid on preview - visible only on hover */}
-        <div className="absolute inset-x-0 bottom-[72px] px-4 translate-y-full group-hover:translate-y-0 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300">
+        {/* Hover content stack: action buttons above, then title + tags. Uses flex column to guarantee no overlap regardless of title length. */}
+        <div className="absolute inset-x-0 bottom-0 p-4 flex flex-col gap-3 translate-y-full group-hover:translate-y-0 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300">
+          {/* Action Buttons row */}
           <div className="flex gap-2">
             <CardOverlayButton
               onClick={(e) => {
@@ -209,6 +196,20 @@ export default function EnhancedAnimationCard({
               <Sparkles className="h-3.5 w-3.5" />
               <span>Similar</span>
             </CardOverlayButton>
+          </div>
+
+          {/* Title & Tags block, kept strictly below the buttons */}
+          <div className="space-y-2">
+            <p className="text-white font-bold text-base line-clamp-2 leading-snug drop-shadow-[0_3px_10px_rgba(0,0,0,0.9)]">
+              {title}
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {tags.slice(0, 3).map((tag) => (
+                <Badge key={tag} variant="outline" className="text-xs bg-black/90 text-white border-white/40 backdrop-blur-sm shadow-lg font-semibold px-2.5 py-0.5">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
           </div>
         </div>
       </div>
