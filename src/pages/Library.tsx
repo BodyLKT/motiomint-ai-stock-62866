@@ -141,12 +141,24 @@ export default function Library() {
               {filtered.map((a) => (
                 <EnhancedAnimationCard
                   key={a.id}
-                  animation={a as any}
+                  id={a.id}
+                  title={a.title}
+                  description={a.description ?? ''}
+                  category={(a.canonical_category || a.category) as string}
+                  thumbnailUrl={a.thumbnail_url}
+                  videoUrl={a.file_url}
+                  tags={a.tags || []}
+                  format={a.format ?? undefined}
+                  resolution={a.resolution ?? undefined}
                   isFavorite={false}
-                  isInCart={false}
-                  onToggleFavorite={() => {}}
-                  onAddToCart={() => {}}
-                  onDownload={() => navigate(`/animation/${a.id}`)}
+                  onFavoriteToggle={() => {
+                    if (!user) setShowLogin(true);
+                  }}
+                  isGuest={!user}
+                  onAuthRequired={() => setShowLogin(true)}
+                  thumbCardUrl={a.thumb_card_url}
+                  thumbStatus={a.thumb_status}
+                  thumbSource={a.thumb_source}
                 />
               ))}
             </div>
