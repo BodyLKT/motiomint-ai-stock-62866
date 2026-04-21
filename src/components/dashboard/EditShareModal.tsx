@@ -20,7 +20,6 @@ import {
   CheckCircle2,
   ExternalLink,
   Sparkles,
-  Video,
   X,
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
@@ -289,7 +288,7 @@ export default function EditShareModal({ open, onOpenChange, animation }: EditSh
               {t('editShare.editSectionDesc')}
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
               <Button
                 onClick={handleEditInCanva}
                 size="lg"
@@ -303,24 +302,6 @@ export default function EditShareModal({ open, onOpenChange, animation }: EditSh
                   <p className="font-semibold">{t('editShare.editInCanva')}</p>
                   <p className="text-xs text-muted-foreground mt-1">
                     {t('editShare.canvaDesc')}
-                  </p>
-                </div>
-                <ExternalLink className="h-4 w-4 text-muted-foreground" />
-              </Button>
-
-              <Button
-                onClick={handleEditInVEED}
-                size="lg"
-                variant="outline"
-                className="h-auto py-6 flex flex-col items-center gap-3 hover:border-primary/50 hover:bg-primary/5 transition-all group"
-              >
-                <div className="p-3 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <Video className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-center">
-                  <p className="font-semibold">{t('editShare.editInVEED')}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {t('editShare.veedDesc')}
                   </p>
                 </div>
                 <ExternalLink className="h-4 w-4 text-muted-foreground" />
@@ -361,7 +342,7 @@ export default function EditShareModal({ open, onOpenChange, animation }: EditSh
             <div className="mt-6 text-xs text-muted-foreground space-y-1">
               <p className="font-medium">Third-party editors</p>
               <p className="leading-relaxed">
-                Canva, CapCut, and VEED are third-party tools. MotioMint is not affiliated with or endorsed by these services. 
+                Canva and CapCut are third-party tools. MotioMint is not affiliated with or endorsed by these services. 
                 Editing your animation in these tools is subject to their own terms and privacy policies.
               </p>
             </div>
