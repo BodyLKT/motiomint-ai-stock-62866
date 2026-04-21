@@ -93,32 +93,6 @@ export default function EditShareModal({ open, onOpenChange, animation }: EditSh
     }
   };
 
-  const handleEditInVEED = () => {
-    try {
-      const veedUrl = 'https://www.veed.io/';
-      const newWindow = window.open(veedUrl, '_blank', 'noopener,noreferrer');
-      
-      if (newWindow) {
-        toast({
-          title: 'Opening VEED',
-          description: 'Your animation is opening in VEED. Upload your video to start editing.',
-        });
-      } else {
-        toast({
-          title: 'Unable to open VEED',
-          description: 'Please allow pop-ups and try again.',
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
-      console.error('Error opening VEED:', error);
-      toast({
-        title: 'Unable to open VEED',
-        description: 'Please try again later.',
-        variant: 'destructive',
-      });
-    }
-  };
 
   const handleShare = async (platform: string) => {
     setIsSharing(true);
