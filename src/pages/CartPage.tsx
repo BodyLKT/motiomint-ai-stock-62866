@@ -316,11 +316,11 @@ export default function CartPage() {
       const itemsToDownload = cartItems.filter(item => selectedItems.has(item.id));
 
       for (const item of itemsToDownload) {
-        // Track download
-        await supabase.from('user_downloads').insert({
-          user_id: user.id,
-          animation_id: item.animation.id,
+        // Enforce server-side quota via SECURITY DEFINER RPC
+        const { error: recordError } = await supabase.rpc('record_download', {
+          _animation_id: item.animation.id,
         });
+        if (recordError) throw recordError;
 
         // Get secure file URL via RPC
         const { data: fileUrl, error: urlError } = await supabase.rpc('get_animation_file_url', {
