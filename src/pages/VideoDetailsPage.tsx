@@ -339,7 +339,12 @@ export default function VideoDetailsPage() {
   };
 
   const handleDownload = async (config: DownloadConfig) => {
-    if (!user) {
+    // Auth gate — never attempt to log a download without a real user
+    if (!user?.id) {
+      toast({
+        title: 'Please sign in',
+        description: 'Sign in to download this animation.',
+      });
       setShowLoginModal(true);
       return;
     }
@@ -348,19 +353,39 @@ export default function VideoDetailsPage() {
 
     setIsDownloading(true);
     try {
-      // Track download via server-side RPC (enforces quota)
-      const { error: rpcError } = await supabase.rpc('record_download', {
-        _animation_id: animation.id,
-      });
-      if (rpcError) throw rpcError;
-
-      // Get secure file URL via RPC
+      // 1) Get secure file URL first — this is the actual access/license check
       const { data: fileUrl, error: urlError } = await supabase.rpc('get_animation_file_url', {
         _animation_id: animation.id,
       });
       if (urlError) throw urlError;
+      if (!fileUrl) {
+        toast({
+          title: 'Download unavailable',
+          description: 'This animation has no file attached. Please try again later.',
+          variant: 'destructive',
+        });
+        return;
+      }
 
-      // Trigger file download
+      // 2) Try to log the download (enforces quota). Quota errors block; FK/logging errors don't.
+      const { error: rpcError } = await supabase.rpc('record_download', {
+        _animation_id: animation.id,
+      });
+      if (rpcError) {
+        const msg = rpcError.message || '';
+        if (msg.includes('Download limit reached')) {
+          toast({
+            title: 'Download limit reached',
+            description: msg,
+            variant: 'destructive',
+          });
+          return;
+        }
+        // Non-blocking: log but continue with the file download
+        console.error('[record_download] non-blocking failure:', rpcError);
+      }
+
+      // 3) Trigger file download
       const link = document.createElement('a');
       link.href = fileUrl;
       link.download = `${animation.title.replace(/\s+/g, '-').toLowerCase()}-${config.resolution}.${config.format}`;
