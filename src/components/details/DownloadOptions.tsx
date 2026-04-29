@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
@@ -32,16 +31,40 @@ interface DownloadOptionsProps {
   isDownloading: boolean;
 }
 
-const PLATFORMS = [
-  { value: 'instagram-story', label: 'Instagram Story', resolution: '1080x1920', ratio: '9:16' },
-  { value: 'instagram-post', label: 'Instagram Post', resolution: '1080x1080', ratio: '1:1' },
-  { value: 'instagram-reel', label: 'Instagram Reel', resolution: '1080x1920', ratio: '9:16' },
-  { value: 'tiktok', label: 'TikTok', resolution: '1080x1920', ratio: '9:16' },
-  { value: 'youtube-short', label: 'YouTube Short', resolution: '1080x1920', ratio: '9:16' },
-  { value: 'youtube-video', label: 'YouTube Video', resolution: '1920x1080', ratio: '16:9' },
-  { value: 'facebook-post', label: 'Facebook Post', resolution: '1080x1080', ratio: '1:1' },
-  { value: 'twitter-post', label: 'Twitter/X Post', resolution: '1920x1080', ratio: '16:9' },
-  { value: 'linkedin-post', label: 'LinkedIn Post', resolution: '1920x1080', ratio: '16:9' },
+type OutputFormatKey = 'portrait-hd' | 'portrait-4k';
+
+const OUTPUT_FORMATS: Record<OutputFormatKey, {
+  label: string;
+  helper: string;
+  resolution: string;
+  aspectRatio: string;
+}> = {
+  'portrait-hd': {
+    label: 'Portrait HD (1080×1920)',
+    helper: '9:16 · Standard',
+    resolution: '1080x1920',
+    aspectRatio: '9:16',
+  },
+  'portrait-4k': {
+    label: 'Portrait 4K (2160×3840)',
+    helper: '9:16 · High quality',
+    resolution: '2160x3840',
+    aspectRatio: '9:16',
+  },
+};
+
+const PLATFORMS: Array<{
+  value: string;
+  label: string;
+  output: OutputFormatKey;
+}> = [
+  { value: 'instagram-story', label: 'Instagram Story', output: 'portrait-hd' },
+  { value: 'instagram-reel', label: 'Instagram Reel', output: 'portrait-hd' },
+  { value: 'tiktok', label: 'TikTok', output: 'portrait-hd' },
+  { value: 'youtube-short', label: 'YouTube Short', output: 'portrait-hd' },
+  { value: 'facebook-story', label: 'Facebook Story', output: 'portrait-hd' },
+  { value: 'snapchat-spotlight', label: 'Snapchat Spotlight', output: 'portrait-hd' },
+  { value: 'portrait-4k', label: 'Portrait 4K', output: 'portrait-4k' },
 ];
 
 const FORMATS = [
@@ -51,49 +74,37 @@ const FORMATS = [
   { value: 'gif', label: 'GIF', description: 'Animated image' },
 ];
 
-const RESOLUTIONS = [
-  { value: '3840x2160', label: '4K (3840x2160)', description: 'Ultra HD' },
-  { value: '1920x1080', label: 'Full HD (1920x1080)', description: 'Standard' },
-  { value: '1080x1920', label: 'Vertical HD (1080x1920)', description: 'Mobile' },
-  { value: '1080x1080', label: 'Square HD (1080x1080)', description: 'Social' },
-  { value: '1280x720', label: 'HD (1280x720)', description: 'Compact' },
-];
-
-const ASPECT_RATIOS = [
-  { value: '16:9', label: '16:9 (Landscape)', description: 'YouTube, Desktop' },
-  { value: '9:16', label: '9:16 (Portrait)', description: 'TikTok, Stories' },
-  { value: '1:1', label: '1:1 (Square)', description: 'Instagram Feed' },
-  { value: '4:3', label: '4:3 (Classic)', description: 'Traditional' },
-];
-
 export default function DownloadOptions({ onDownload, isDownloading }: DownloadOptionsProps) {
-  const { t } = useTranslation();
+  useTranslation();
   const [selectedPlatform, setSelectedPlatform] = useState<string>('');
   const [format, setFormat] = useState<string>('mp4');
-  const [resolution, setResolution] = useState<string>('1920x1080');
-  const [aspectRatio, setAspectRatio] = useState<string>('16:9');
-  const [useCustom, setUseCustom] = useState(false);
+  const [outputFormat, setOutputFormat] = useState<OutputFormatKey>('portrait-hd');
 
   const handlePlatformChange = (platformValue: string) => {
-    setSelectedPlatform(platformValue);
     const platform = PLATFORMS.find(p => p.value === platformValue);
     if (platform) {
-      setResolution(platform.resolution);
-      setAspectRatio(platform.ratio);
-      setUseCustom(false);
+      setSelectedPlatform(platformValue);
+      setOutputFormat(platform.output);
     }
   };
 
-  const handleCustomChange = () => {
-    setUseCustom(true);
-    setSelectedPlatform('');
+  const handleOutputChange = (val: OutputFormatKey) => {
+    setOutputFormat(val);
+    // Clear preset if it doesn't match
+    const preset = PLATFORMS.find(p => p.value === selectedPlatform);
+    if (preset && preset.output !== val) {
+      setSelectedPlatform('');
+    }
   };
+
+  const current = OUTPUT_FORMATS[outputFormat];
+  const displayResolution = current.resolution.replace('x', '×');
 
   const handleDownload = () => {
     onDownload({
       format,
-      resolution,
-      aspectRatio,
+      resolution: current.resolution,
+      aspectRatio: current.aspectRatio,
       platform: selectedPlatform || undefined,
     });
   };
@@ -103,7 +114,7 @@ export default function DownloadOptions({ onDownload, isDownloading }: DownloadO
       <div>
         <h3 className="text-lg font-semibold mb-2">Download Options</h3>
         <p className="text-sm text-muted-foreground">
-          Select your preferred format and quality settings
+          Portrait-only exports optimized for vertical platforms
         </p>
       </div>
 
@@ -119,7 +130,7 @@ export default function DownloadOptions({ onDownload, isDownloading }: DownloadO
                 <Info className="w-4 h-4 text-muted-foreground" />
               </TooltipTrigger>
               <TooltipContent>
-                <p className="max-w-xs">Choose a platform for optimized settings</p>
+                <p className="max-w-xs">All presets export in 9:16 portrait</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -143,24 +154,12 @@ export default function DownloadOptions({ onDownload, isDownloading }: DownloadO
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="text-xs font-medium truncate">{platform.label}</div>
-                  <div className="text-xs text-muted-foreground">{platform.ratio}</div>
+                  <div className="text-xs text-muted-foreground">9:16</div>
                 </div>
               </div>
             </Button>
           ))}
         </div>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleCustomChange}
-          className={cn(
-            "w-full",
-            useCustom && "border-primary text-primary"
-          )}
-        >
-          Custom Settings
-        </Button>
       </div>
 
       <Separator />
@@ -185,53 +184,22 @@ export default function DownloadOptions({ onDownload, isDownloading }: DownloadO
         </Select>
       </div>
 
-      {/* Resolution Selection */}
+      {/* Output Format (merged Resolution + Aspect Ratio) */}
       <div className="space-y-3">
-        <label className="text-sm font-medium">Resolution</label>
-        <Select 
-          value={resolution} 
-          onValueChange={(val) => {
-            setResolution(val);
-            handleCustomChange();
-          }}
-          disabled={!!selectedPlatform && !useCustom}
+        <label className="text-sm font-medium">Output Format</label>
+        <Select
+          value={outputFormat}
+          onValueChange={(val) => handleOutputChange(val as OutputFormatKey)}
         >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {RESOLUTIONS.map((res) => (
-              <SelectItem key={res.value} value={res.value}>
+            {(Object.keys(OUTPUT_FORMATS) as OutputFormatKey[]).map((key) => (
+              <SelectItem key={key} value={key}>
                 <div className="flex items-center justify-between w-full gap-4">
-                  <span>{res.label}</span>
-                  <span className="text-xs text-muted-foreground">{res.description}</span>
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Aspect Ratio Selection */}
-      <div className="space-y-3">
-        <label className="text-sm font-medium">Aspect Ratio</label>
-        <Select 
-          value={aspectRatio} 
-          onValueChange={(val) => {
-            setAspectRatio(val);
-            handleCustomChange();
-          }}
-          disabled={!!selectedPlatform && !useCustom}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {ASPECT_RATIOS.map((ratio) => (
-              <SelectItem key={ratio.value} value={ratio.value}>
-                <div className="flex items-center justify-between w-full gap-4">
-                  <span>{ratio.label}</span>
-                  <span className="text-xs text-muted-foreground">{ratio.description}</span>
+                  <span>{OUTPUT_FORMATS[key].label}</span>
+                  <span className="text-xs text-muted-foreground">{OUTPUT_FORMATS[key].helper}</span>
                 </div>
               </SelectItem>
             ))}
@@ -255,7 +223,7 @@ export default function DownloadOptions({ onDownload, isDownloading }: DownloadO
           </>
         ) : (
           <>
-            Download {format.toUpperCase()} ({resolution})
+            Download {format.toUpperCase()} ({displayResolution})
           </>
         )}
       </Button>
